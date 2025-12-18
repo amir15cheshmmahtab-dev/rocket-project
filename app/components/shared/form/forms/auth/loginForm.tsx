@@ -1,5 +1,6 @@
 import InnerLoginForm from "@/components/auth/innerLoginForm";
 import { LoginFormValuesInterface } from "@/components/contracts/auth";
+import callApi from "@/helper/callApi";
 import { withFormik } from "formik";
 import * as yup from "yup";
 
@@ -10,6 +11,7 @@ const loginFormValidationSchema = yup.object().shape({
 })
 
 interface LoginFormProps {
+    setCookie : any
 }
 
 const LoginForm = withFormik<LoginFormProps , LoginFormValuesInterface>({
@@ -18,8 +20,17 @@ const LoginForm = withFormik<LoginFormProps , LoginFormValuesInterface>({
         password : ''
     }),
     validationSchema: loginFormValidationSchema,
-    handleSubmit : (values) => {
-        console.log(values);
+    handleSubmit : async (values , { props }) => {
+        const res = await callApi().post('/auth/login' , values)
+        if(res.status === 200) {
+            props.setCookie('shopy-token' , res.data.token , {
+                'maxAge' : 3600 * 24 * 30,
+                'domain' : 'localhost',
+                'path' : '/',
+                'sameSite' : 'lax'
+            })
+        }
+
     }
 })(InnerLoginForm)
 

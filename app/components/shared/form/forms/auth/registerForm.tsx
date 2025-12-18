@@ -1,7 +1,10 @@
 import InnerRegisterForm from "@/components/auth/innerRegisterForm";
 import { RegisterFormValuesInterface } from "@/components/contracts/auth";
+import callApi from "@/helper/callApi";
 import {  withFormik } from "formik";
+import Router from "next/router";
 import * as yup from "yup";
+
 
 
 const registerFormValidationSchema = yup.object().shape({
@@ -20,8 +23,11 @@ const RegisterForm = withFormik<RegisterFormProps , RegisterFormValuesInterface>
         password : ''
     }),
     validationSchema: registerFormValidationSchema,
-    handleSubmit : (values) => {
-        console.log(values);
+    handleSubmit : async (values) => {
+        const res = await callApi().post('/auth/register' , values);
+        if(res.status === 201) {
+            Router.push('/auth/login')
+        }
     }
 })(InnerRegisterForm)
 

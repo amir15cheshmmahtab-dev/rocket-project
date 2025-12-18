@@ -1,7 +1,6 @@
 import LoginForm from '@/components/shared/form/forms/auth/loginForm'
 import type { NextPage } from 'next'
 
-
 const Login : NextPage = () => {
     return (
         <>
